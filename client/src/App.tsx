@@ -7,6 +7,7 @@ import Dashboard from "@/pages/dashboard";
 import Workouts from "@/pages/workouts";
 import Exercises from "@/pages/exercises";
 import History from "@/pages/history";
+import Login from "@/pages/login";
 import Header from "@/components/Header";
 import MobileNav from "@/components/MobileNav";
 import { useState } from "react";

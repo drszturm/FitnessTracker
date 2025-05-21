@@ -37,10 +37,10 @@ export class FacebookAuthProvider implements AuthProvider {
         // Check if user exists
         const existingUsers = await db.select()
           .from(users)
-          .where(eq(users.providerUserId, profile.id))
-          .where(eq(users.provider, 'facebook'));
-        
-        const existingUser = existingUsers[0];
+          .where(eq(users.providerUserId, profile.id));
+          
+        // Filter in JS since multiple where clauses aren't working as expected
+        const existingUser = existingUsers.find(user => user.provider === 'facebook');
         
         if (existingUser) {
           return done(null, existingUser);

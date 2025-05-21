@@ -46,10 +46,10 @@ export class InstagramAuthProvider implements AuthProvider {
         // Check if user exists
         const existingUsers = await db.select()
           .from(users)
-          .where(eq(users.providerUserId, profileData.id))
-          .where(eq(users.provider, 'instagram'));
-        
-        const existingUser = existingUsers[0];
+          .where(eq(users.providerUserId, profileData.id));
+          
+        // Filter in JS since multiple where clauses aren't working as expected
+        const existingUser = existingUsers.find(user => user.provider === 'instagram');
         
         if (existingUser) {
           return done(null, existingUser);
