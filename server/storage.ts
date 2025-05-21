@@ -18,8 +18,17 @@ import {
   WorkoutWithExercises,
   WorkoutSessionWithDetails,
   users,
+  exercises,
+  workouts,
+  workoutExercises,
+  workoutSessions,
+  sessionExercises,
+  exerciseSets,
+  personalRecords,
   exerciseCategories,
 } from "@shared/schema";
+import { eq, and, gte, desc } from "drizzle-orm";
+import { db } from "./db";
 
 export interface IStorage {
   // User methods
