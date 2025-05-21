@@ -5,11 +5,11 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import { Facebook, Instagram, Mail } from 'lucide-react';
-import { useNavigate } from 'wouter';
+import { useLocation } from 'wouter';
 
 export default function LoginPage() {
   const { toast } = useToast();
-  const [_, navigate] = useNavigate();
+  const [_, setLocation] = useLocation();
   
   // Check if user is already authenticated
   const { data: authData, isLoading } = useQuery({
@@ -19,10 +19,11 @@ export default function LoginPage() {
   
   // If user is already logged in, redirect to dashboard
   React.useEffect(() => {
-    if (authData?.authenticated) {
-      navigate('/dashboard');
+    // Type guard for authData
+    if (authData && typeof authData === 'object' && 'authenticated' in authData && authData.authenticated) {
+      setLocation('/dashboard');
     }
-  }, [authData, navigate]);
+  }, [authData, setLocation]);
   
   const handleSocialLogin = (provider: string) => {
     // Redirect to the provider's auth endpoint
