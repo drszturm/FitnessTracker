@@ -2,6 +2,11 @@ import { db } from './db';
 import { exercises } from '@shared/schema';
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
+
+// Get the directory name in ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 async function initializeExercises() {
   console.log('Initializing exercises database...');
@@ -47,7 +52,7 @@ async function initializeExercises() {
 export { initializeExercises };
 
 // If this script is run directly, execute the initialization
-if (require.main === module) {
+if (import.meta.url.endsWith(process.argv[1])) {
   initializeExercises()
     .then(() => {
       console.log('Database initialization completed.');
