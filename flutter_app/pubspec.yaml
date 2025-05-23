@@ -1,0 +1,50 @@
+name: fittrack_mobile
+description: A mobile fitness tracking app built with Flutter
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # HTTP requests
+  http: ^1.1.0
+  
+  # State management
+  provider: ^6.1.1
+  
+  # Navigation
+  go_router: ^12.1.3
+  
+  # UI components
+  cupertino_icons: ^1.0.2
+  google_fonts: ^6.1.0
+  
+  # Authentication
+  shared_preferences: ^2.2.2
+  
+  # Charts and analytics
+  fl_chart: ^0.65.0
+  
+  # Date handling
+  intl: ^0.18.1
+  
+  # Icons
+  heroicons: ^0.9.0
+  
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+  
+  assets:
+    - assets/images/
+    - assets/icons/
