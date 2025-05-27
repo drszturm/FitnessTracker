@@ -1,0 +1,500 @@
+{
+  "exercises": [
+    {
+      "name": "Bench Press",
+      "description": "A compound pushing exercise that targets the chest, shoulders, and triceps",
+      "category": "Chest",
+      "targetMuscles": "Chest, Triceps, Shoulders",
+      "equipmentType": "Barbell",
+      "exerciseType": "Strength"
+    },
+    {
+      "name": "Incline Bench Press",
+      "description": "A variation of the bench press performed on an inclined bench to target the upper chest",
+      "category": "Chest",
+      "targetMuscles": "Upper Chest, Shoulders, Triceps",
+      "equipmentType": "Barbell",
+      "exerciseType": "Strength"
+    },
+    {
+      "name": "Decline Bench Press",
+      "description": "A variation of the bench press performed on a declined bench to target the lower chest",
+      "category": "Chest",
+      "targetMuscles": "Lower Chest, Triceps",
+      "equipmentType": "Barbell",
+      "exerciseType": "Strength"
+    },
+    {
+      "name": "Dumbbell Bench Press",
+      "description": "A bench press variation using dumbbells that allows for a greater range of motion",
+      "category": "Chest",
+      "targetMuscles": "Chest, Triceps, Shoulders",
+      "equipmentType": "Dumbbell",
+      "exerciseType": "Strength"
+    },
+    {
+      "name": "Push-Up",
+      "description": "A bodyweight exercise that targets the chest, shoulders, and triceps",
+      "category": "Chest",
+      "targetMuscles": "Chest, Triceps, Shoulders, Core",
+      "equipmentType": "Bodyweight",
+      "exerciseType": "Strength"
+    },
+    {
+      "name": "Dumbbell Fly",
+      "description": "An isolation exercise for the chest using dumbbells",
+      "category": "Chest",
+      "targetMuscles": "Chest, Shoulders",
+      "equipmentType": "Dumbbell",
+      "exerciseType": "Isolation"
+    },
+    {
+      "name": "Cable Fly",
+      "description": "A chest isolation exercise performed with a cable machine",
+      "category": "Chest",
+      "targetMuscles": "Chest, Shoulders",
+      "equipmentType": "Cable",
+      "exerciseType": "Isolation"
+    },
+    {
+      "name": "Chest Dip",
+      "description": "A bodyweight exercise that emphasizes the lower chest",
+      "category": "Chest",
+      "targetMuscles": "Lower Chest, Triceps, Shoulders",
+      "equipmentType": "Bodyweight",
+      "exerciseType": "Compound"
+    },
+    {
+      "name": "Squat",
+      "description": "A compound lower body exercise that targets the quadriceps, hamstrings, and glutes",
+      "category": "Legs",
+      "targetMuscles": "Quadriceps, Hamstrings, Glutes, Lower Back",
+      "equipmentType": "Barbell",
+      "exerciseType": "Strength"
+    },
+    {
+      "name": "Front Squat",
+      "description": "A squat variation where the barbell is held across the front deltoids",
+      "category": "Legs",
+      "targetMuscles": "Quadriceps, Core, Upper Back",
+      "equipmentType": "Barbell",
+      "exerciseType": "Strength"
+    },
+    {
+      "name": "Leg Press",
+      "description": "A machine-based lower body exercise that targets the quadriceps, hamstrings, and glutes",
+      "category": "Legs",
+      "targetMuscles": "Quadriceps, Hamstrings, Glutes",
+      "equipmentType": "Machine",
+      "exerciseType": "Strength"
+    },
+    {
+      "name": "Deadlift",
+      "description": "A compound exercise that targets the lower back, glutes, and hamstrings",
+      "category": "Back",
+      "targetMuscles": "Lower Back, Glutes, Hamstrings, Traps",
+      "equipmentType": "Barbell",
+      "exerciseType": "Strength"
+    },
+    {
+      "name": "Romanian Deadlift",
+      "description": "A deadlift variation that emphasizes the hamstrings and glutes",
+      "category": "Legs",
+      "targetMuscles": "Hamstrings, Glutes, Lower Back",
+      "equipmentType": "Barbell",
+      "exerciseType": "Strength"
+    },
+    {
+      "name": "Leg Curl",
+      "description": "An isolation exercise for the hamstrings",
+      "category": "Legs",
+      "targetMuscles": "Hamstrings",
+      "equipmentType": "Machine",
+      "exerciseType": "Isolation"
+    },
+    {
+      "name": "Leg Extension",
+      "description": "An isolation exercise for the quadriceps",
+      "category": "Legs",
+      "targetMuscles": "Quadriceps",
+      "equipmentType": "Machine",
+      "exerciseType": "Isolation"
+    },
+    {
+      "name": "Calf Raise",
+      "description": "An isolation exercise for the calves",
+      "category": "Legs",
+      "targetMuscles": "Calves",
+      "equipmentType": "Machine",
+      "exerciseType": "Isolation"
+    },
+    {
+      "name": "Lunge",
+      "description": "A unilateral leg exercise that targets the quadriceps, hamstrings, and glutes",
+      "category": "Legs",
+      "targetMuscles": "Quadriceps, Hamstrings, Glutes",
+      "equipmentType": "Bodyweight",
+      "exerciseType": "Compound"
+    },
+    {
+      "name": "Bulgarian Split Squat",
+      "description": "A single-leg squat variation with the rear foot elevated",
+      "category": "Legs",
+      "targetMuscles": "Quadriceps, Glutes, Hamstrings",
+      "equipmentType": "Dumbbell",
+      "exerciseType": "Compound"
+    },
+    {
+      "name": "Pull-up",
+      "description": "A compound upper body exercise that targets the back and biceps",
+      "category": "Back",
+      "targetMuscles": "Lats, Biceps, Upper Back",
+      "equipmentType": "Bodyweight",
+      "exerciseType": "Strength"
+    },
+    {
+      "name": "Chin-up",
+      "description": "A pull-up variation with supinated grip that emphasizes the biceps",
+      "category": "Back",
+      "targetMuscles": "Lats, Biceps",
+      "equipmentType": "Bodyweight",
+      "exerciseType": "Strength"
+    },
+    {
+      "name": "Lat Pulldown",
+      "description": "A machine-based exercise that mimics the pull-up motion",
+      "category": "Back",
+      "targetMuscles": "Lats, Biceps, Upper Back",
+      "equipmentType": "Cable",
+      "exerciseType": "Compound"
+    },
+    {
+      "name": "Seated Row",
+      "description": "A horizontal rowing exercise targeting the middle back and biceps",
+      "category": "Back",
+      "targetMuscles": "Middle Back, Lats, Biceps",
+      "equipmentType": "Cable",
+      "exerciseType": "Compound"
+    },
+    {
+      "name": "Barbell Row",
+      "description": "A free-weight back exercise performed with a barbell",
+      "category": "Back",
+      "targetMuscles": "Upper Back, Lats, Biceps",
+      "equipmentType": "Barbell",
+      "exerciseType": "Compound"
+    },
+    {
+      "name": "T-Bar Row",
+      "description": "A row variation using a T-bar apparatus",
+      "category": "Back",
+      "targetMuscles": "Middle Back, Lats",
+      "equipmentType": "Machine",
+      "exerciseType": "Compound"
+    },
+    {
+      "name": "Dumbbell Row",
+      "description": "A single-arm back exercise using a dumbbell",
+      "category": "Back",
+      "targetMuscles": "Upper Back, Lats, Biceps",
+      "equipmentType": "Dumbbell",
+      "exerciseType": "Compound"
+    },
+    {
+      "name": "Face Pull",
+      "description": "A cable exercise targeting the rear deltoids and rotator cuff",
+      "category": "Shoulders",
+      "targetMuscles": "Rear Deltoids, Rotator Cuff",
+      "equipmentType": "Cable",
+      "exerciseType": "Isolation"
+    },
+    {
+      "name": "Shoulder Press",
+      "description": "A compound upper body exercise that targets the shoulders and triceps",
+      "category": "Shoulders",
+      "targetMuscles": "Deltoids, Triceps",
+      "equipmentType": "Barbell",
+      "exerciseType": "Strength"
+    },
+    {
+      "name": "Dumbbell Shoulder Press",
+      "description": "A shoulder press variation using dumbbells",
+      "category": "Shoulders",
+      "targetMuscles": "Deltoids, Triceps",
+      "equipmentType": "Dumbbell",
+      "exerciseType": "Strength"
+    },
+    {
+      "name": "Arnold Press",
+      "description": "A rotational dumbbell shoulder press named after Arnold Schwarzenegger",
+      "category": "Shoulders",
+      "targetMuscles": "Deltoids, Triceps",
+      "equipmentType": "Dumbbell",
+      "exerciseType": "Compound"
+    },
+    {
+      "name": "Lateral Raise",
+      "description": "An isolation exercise for the lateral deltoids",
+      "category": "Shoulders",
+      "targetMuscles": "Lateral Deltoids",
+      "equipmentType": "Dumbbell",
+      "exerciseType": "Isolation"
+    },
+    {
+      "name": "Front Raise",
+      "description": "An isolation exercise for the anterior deltoids",
+      "category": "Shoulders",
+      "targetMuscles": "Front Deltoids",
+      "equipmentType": "Dumbbell",
+      "exerciseType": "Isolation"
+    },
+    {
+      "name": "Reverse Fly",
+      "description": "An isolation exercise for the posterior deltoids",
+      "category": "Shoulders",
+      "targetMuscles": "Rear Deltoids",
+      "equipmentType": "Dumbbell",
+      "exerciseType": "Isolation"
+    },
+    {
+      "name": "Upright Row",
+      "description": "A compound exercise targeting the shoulders and trapezius",
+      "category": "Shoulders",
+      "targetMuscles": "Deltoids, Trapezius",
+      "equipmentType": "Barbell",
+      "exerciseType": "Compound"
+    },
+    {
+      "name": "Shrug",
+      "description": "An isolation exercise for the trapezius muscles",
+      "category": "Shoulders",
+      "targetMuscles": "Trapezius",
+      "equipmentType": "Barbell",
+      "exerciseType": "Isolation"
+    },
+    {
+      "name": "Bicep Curl",
+      "description": "An isolation exercise for the biceps",
+      "category": "Arms",
+      "targetMuscles": "Biceps",
+      "equipmentType": "Barbell",
+      "exerciseType": "Isolation"
+    },
+    {
+      "name": "Dumbbell Curl",
+      "description": "A bicep curl variation using dumbbells",
+      "category": "Arms",
+      "targetMuscles": "Biceps",
+      "equipmentType": "Dumbbell",
+      "exerciseType": "Isolation"
+    },
+    {
+      "name": "Hammer Curl",
+      "description": "A bicep curl variation with neutral grip that also targets the brachialis",
+      "category": "Arms",
+      "targetMuscles": "Biceps, Brachialis",
+      "equipmentType": "Dumbbell",
+      "exerciseType": "Isolation"
+    },
+    {
+      "name": "Concentration Curl",
+      "description": "A seated bicep curl variation that maximizes isolation",
+      "category": "Arms",
+      "targetMuscles": "Biceps",
+      "equipmentType": "Dumbbell",
+      "exerciseType": "Isolation"
+    },
+    {
+      "name": "Preacher Curl",
+      "description": "A bicep curl variation performed on a preacher bench",
+      "category": "Arms",
+      "targetMuscles": "Biceps",
+      "equipmentType": "Barbell",
+      "exerciseType": "Isolation"
+    },
+    {
+      "name": "Tricep Pushdown",
+      "description": "A cable exercise for the triceps",
+      "category": "Arms",
+      "targetMuscles": "Triceps",
+      "equipmentType": "Cable",
+      "exerciseType": "Isolation"
+    },
+    {
+      "name": "Skull Crusher",
+      "description": "A tricep exercise performed lying on a bench",
+      "category": "Arms",
+      "targetMuscles": "Triceps",
+      "equipmentType": "Barbell",
+      "exerciseType": "Isolation"
+    },
+    {
+      "name": "Tricep Dip",
+      "description": "A bodyweight exercise targeting the triceps",
+      "category": "Arms",
+      "targetMuscles": "Triceps, Chest, Shoulders",
+      "equipmentType": "Bodyweight",
+      "exerciseType": "Compound"
+    },
+    {
+      "name": "Tricep Extension",
+      "description": "An isolation exercise for the triceps",
+      "category": "Arms",
+      "targetMuscles": "Triceps",
+      "equipmentType": "Dumbbell",
+      "exerciseType": "Isolation"
+    },
+    {
+      "name": "Crunch",
+      "description": "A basic abdominal exercise",
+      "category": "Core",
+      "targetMuscles": "Rectus Abdominis",
+      "equipmentType": "Bodyweight",
+      "exerciseType": "Isolation"
+    },
+    {
+      "name": "Sit-Up",
+      "description": "A stronger variation of the crunch that engages more muscles",
+      "category": "Core",
+      "targetMuscles": "Rectus Abdominis, Hip Flexors",
+      "equipmentType": "Bodyweight",
+      "exerciseType": "Compound"
+    },
+    {
+      "name": "Leg Raise",
+      "description": "A lower abdominal exercise",
+      "category": "Core",
+      "targetMuscles": "Lower Rectus Abdominis, Hip Flexors",
+      "equipmentType": "Bodyweight",
+      "exerciseType": "Isolation"
+    },
+    {
+      "name": "Russian Twist",
+      "description": "A rotational exercise for the obliques",
+      "category": "Core",
+      "targetMuscles": "Obliques",
+      "equipmentType": "Bodyweight",
+      "exerciseType": "Isolation"
+    },
+    {
+      "name": "Plank",
+      "description": "An isometric core exercise that builds endurance",
+      "category": "Core",
+      "targetMuscles": "Rectus Abdominis, Transverse Abdominis",
+      "equipmentType": "Bodyweight",
+      "exerciseType": "Isometric"
+    },
+    {
+      "name": "Side Plank",
+      "description": "A lateral plank variation that targets the obliques",
+      "category": "Core",
+      "targetMuscles": "Obliques, Transverse Abdominis",
+      "equipmentType": "Bodyweight",
+      "exerciseType": "Isometric"
+    },
+    {
+      "name": "Mountain Climber",
+      "description": "A dynamic core exercise that also provides cardio benefits",
+      "category": "Core",
+      "targetMuscles": "Rectus Abdominis, Hip Flexors, Shoulders",
+      "equipmentType": "Bodyweight",
+      "exerciseType": "Compound"
+    },
+    {
+      "name": "Cable Crunch",
+      "description": "A weighted abdominal exercise using a cable machine",
+      "category": "Core",
+      "targetMuscles": "Rectus Abdominis",
+      "equipmentType": "Cable",
+      "exerciseType": "Isolation"
+    },
+    {
+      "name": "Ab Wheel Rollout",
+      "description": "A challenging core exercise using an ab wheel",
+      "category": "Core",
+      "targetMuscles": "Rectus Abdominis, Transverse Abdominis",
+      "equipmentType": "Equipment",
+      "exerciseType": "Compound"
+    },
+    {
+      "name": "Running",
+      "description": "A basic cardio exercise that can be performed outdoors or on a treadmill",
+      "category": "Cardio",
+      "targetMuscles": "Legs, Cardiovascular System",
+      "equipmentType": "None",
+      "exerciseType": "Endurance"
+    },
+    {
+      "name": "Cycling",
+      "description": "A low-impact cardio exercise that can be performed outdoors or on a stationary bike",
+      "category": "Cardio",
+      "targetMuscles": "Legs, Cardiovascular System",
+      "equipmentType": "Machine",
+      "exerciseType": "Endurance"
+    },
+    {
+      "name": "Rowing",
+      "description": "A full-body cardio exercise that also builds strength",
+      "category": "Cardio",
+      "targetMuscles": "Legs, Back, Arms, Cardiovascular System",
+      "equipmentType": "Machine",
+      "exerciseType": "Compound"
+    },
+    {
+      "name": "Jump Rope",
+      "description": "A high-intensity cardio exercise that improves coordination",
+      "category": "Cardio",
+      "targetMuscles": "Legs, Shoulders, Cardiovascular System",
+      "equipmentType": "Equipment",
+      "exerciseType": "Endurance"
+    },
+    {
+      "name": "Stair Climber",
+      "description": "A cardio exercise that targets the lower body",
+      "category": "Cardio",
+      "targetMuscles": "Legs, Glutes, Cardiovascular System",
+      "equipmentType": "Machine",
+      "exerciseType": "Endurance"
+    },
+    {
+      "name": "Elliptical Trainer",
+      "description": "A low-impact cardio exercise that works the whole body",
+      "category": "Cardio",
+      "targetMuscles": "Legs, Arms, Cardiovascular System",
+      "equipmentType": "Machine",
+      "exerciseType": "Endurance"
+    },
+    {
+      "name": "High Knees",
+      "description": "A dynamic cardio exercise that can be done anywhere",
+      "category": "Cardio",
+      "targetMuscles": "Legs, Core, Cardiovascular System",
+      "equipmentType": "Bodyweight",
+      "exerciseType": "Endurance"
+    },
+    {
+      "name": "Burpee",
+      "description": "A high-intensity full-body exercise",
+      "category": "Cardio",
+      "targetMuscles": "Full Body, Cardiovascular System",
+      "equipmentType": "Bodyweight",
+      "exerciseType": "Compound"
+    },
+    {
+      "name": "Box Jump",
+      "description": "A plyometric exercise that builds explosive power",
+      "category": "Cardio",
+      "targetMuscles": "Legs, Cardiovascular System",
+      "equipmentType": "Equipment",
+      "exerciseType": "Plyometric"
+    },
+    {
+      "name": "Battle Ropes",
+      "description": "A high-intensity exercise using heavy ropes",
+      "category": "Cardio",
+      "targetMuscles": "Arms, Shoulders, Core, Cardiovascular System",
+      "equipmentType": "Equipment",
+      "exerciseType": "Endurance"
+    }
+  ]
+}

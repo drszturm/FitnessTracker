@@ -18,8 +18,17 @@ import {
   WorkoutWithExercises,
   WorkoutSessionWithDetails,
   users,
+  exercises,
+  workouts,
+  workoutExercises,
+  workoutSessions,
+  sessionExercises,
+  exerciseSets,
+  personalRecords,
   exerciseCategories,
 } from "@shared/schema";
+import { eq, and, gte, desc } from "drizzle-orm";
+import { db } from "./db";
 
 export interface IStorage {
   // User methods
@@ -706,4 +715,747 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export class DatabaseStorage implements IStorage {
+  // User methods
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
+    return user;
+  }
+
+  // Exercise methods
+  async getExercises(): Promise<Exercise[]> {
+    return await db.select().from(exercises);
+  }
+
+  async getExercisesByCategory(category: string): Promise<Exercise[]> {
+    if (category === "All") {
+      return this.getExercises();
+    }
+    return await db.select().from(exercises).where(eq(exercises.category, category));
+  }
+
+  async getExercise(id: number): Promise<Exercise | undefined> {
+    const [exercise] = await db.select().from(exercises).where(eq(exercises.id, id));
+    return exercise || undefined;
+  }
+
+  async createExercise(insertExercise: InsertExercise): Promise<Exercise> {
+    const exerciseToInsert = {
+      ...insertExercise,
+      description: insertExercise.description || null,
+      targetMuscles: insertExercise.targetMuscles || null,
+      equipmentType: insertExercise.equipmentType || null,
+      exerciseType: insertExercise.exerciseType || null
+    };
+    
+    const [exercise] = await db
+      .insert(exercises)
+      .values(exerciseToInsert)
+      .returning();
+    return exercise;
+  }
+
+  async updateExercise(id: number, exercise: Partial<InsertExercise>): Promise<Exercise | undefined> {
+    const [updatedExercise] = await db
+      .update(exercises)
+      .set(exercise)
+      .where(eq(exercises.id, id))
+      .returning();
+    return updatedExercise || undefined;
+  }
+
+  async deleteExercise(id: number): Promise<boolean> {
+    const result = await db
+      .delete(exercises)
+      .where(eq(exercises.id, id));
+    return !!result;
+  }
+
+  // Workout methods
+  async getWorkouts(userId: number): Promise<WorkoutWithExercises[]> {
+    const userWorkouts = await db
+      .select()
+      .from(workouts)
+      .where(eq(workouts.userId, userId));
+    
+    return Promise.all(
+      userWorkouts.map(async (workout) => {
+        const exercises = await this.getWorkoutExercises(workout.id);
+        return {
+          ...workout,
+          exercises,
+        };
+      }),
+    );
+  }
+
+  async getWorkout(id: number): Promise<WorkoutWithExercises | undefined> {
+    const [workout] = await db
+      .select()
+      .from(workouts)
+      .where(eq(workouts.id, id));
+    
+    if (!workout) return undefined;
+    
+    const exercises = await this.getWorkoutExercises(id);
+    return {
+      ...workout,
+      exercises,
+    };
+  }
+
+  async createWorkout(insertWorkout: InsertWorkout): Promise<Workout> {
+    const [workout] = await db
+      .insert(workouts)
+      .values({
+        ...insertWorkout,
+        createdAt: new Date(),
+        lastCompletedAt: null
+      })
+      .returning();
+    return workout;
+  }
+
+  async updateWorkout(id: number, workout: Partial<InsertWorkout>): Promise<Workout | undefined> {
+    const [updatedWorkout] = await db
+      .update(workouts)
+      .set(workout)
+      .where(eq(workouts.id, id))
+      .returning();
+    return updatedWorkout || undefined;
+  }
+
+  async deleteWorkout(id: number): Promise<boolean> {
+    // Delete all associated workout exercises first
+    await this.deleteWorkoutExercisesByWorkoutId(id);
+    
+    const result = await db
+      .delete(workouts)
+      .where(eq(workouts.id, id));
+    return !!result;
+  }
+
+  async updateWorkoutLastCompleted(id: number, date: Date): Promise<Workout | undefined> {
+    const [updatedWorkout] = await db
+      .update(workouts)
+      .set({ lastCompletedAt: date })
+      .where(eq(workouts.id, id))
+      .returning();
+    return updatedWorkout || undefined;
+  }
+
+  // Workout Exercise methods
+  async getWorkoutExercises(workoutId: number): Promise<(WorkoutExercise & { exercise: Exercise })[]> {
+    const workoutExercisesData = await db
+      .select()
+      .from(workoutExercises)
+      .where(eq(workoutExercises.workoutId, workoutId))
+      .orderBy(workoutExercises.order);
+    
+    return Promise.all(
+      workoutExercisesData.map(async (we) => {
+        const exercise = await this.getExercise(we.exerciseId);
+        return {
+          ...we,
+          exercise: exercise!,
+        };
+      }),
+    );
+  }
+
+  async createWorkoutExercise(insertWorkoutExercise: InsertWorkoutExercise): Promise<WorkoutExercise> {
+    const workoutExerciseToInsert = {
+      ...insertWorkoutExercise,
+      weight: insertWorkoutExercise.weight || null
+    };
+    
+    const [workoutExercise] = await db
+      .insert(workoutExercises)
+      .values(workoutExerciseToInsert)
+      .returning();
+    return workoutExercise;
+  }
+
+  async updateWorkoutExercise(id: number, workoutExercise: Partial<InsertWorkoutExercise>): Promise<WorkoutExercise | undefined> {
+    const [updatedWorkoutExercise] = await db
+      .update(workoutExercises)
+      .set(workoutExercise)
+      .where(eq(workoutExercises.id, id))
+      .returning();
+    return updatedWorkoutExercise || undefined;
+  }
+
+  async deleteWorkoutExercise(id: number): Promise<boolean> {
+    const result = await db
+      .delete(workoutExercises)
+      .where(eq(workoutExercises.id, id));
+    return !!result;
+  }
+
+  async deleteWorkoutExercisesByWorkoutId(workoutId: number): Promise<boolean> {
+    const result = await db
+      .delete(workoutExercises)
+      .where(eq(workoutExercises.workoutId, workoutId));
+    return true;
+  }
+
+  // Workout Session methods
+  async getWorkoutSessions(userId: number): Promise<WorkoutSession[]> {
+    return await db
+      .select()
+      .from(workoutSessions)
+      .where(eq(workoutSessions.userId, userId))
+      .orderBy(desc(workoutSessions.date));
+  }
+
+  async getWorkoutSessionsByWorkoutId(workoutId: number): Promise<WorkoutSession[]> {
+    return await db
+      .select()
+      .from(workoutSessions)
+      .where(eq(workoutSessions.workoutId, workoutId))
+      .orderBy(desc(workoutSessions.date));
+  }
+
+  async getWorkoutSession(id: number): Promise<WorkoutSessionWithDetails | undefined> {
+    const [session] = await db
+      .select()
+      .from(workoutSessions)
+      .where(eq(workoutSessions.id, id));
+    
+    if (!session) return undefined;
+    
+    const [workout] = await db
+      .select()
+      .from(workouts)
+      .where(eq(workouts.id, session.workoutId));
+    
+    if (!workout) return undefined;
+    
+    const sessionExercises = await this.getSessionExercises(id);
+    
+    const sessionExercisesWithSets = await Promise.all(
+      sessionExercises.map(async (se) => {
+        const sets = await this.getExerciseSets(se.id);
+        return {
+          ...se,
+          sets,
+        };
+      }),
+    );
+    
+    return {
+      ...session,
+      workout,
+      sessionExercises: sessionExercisesWithSets,
+    };
+  }
+
+  async getRecentWorkoutSessions(userId: number, limit: number): Promise<(WorkoutSession & { workout: Workout })[]> {
+    const sessions = await db
+      .select()
+      .from(workoutSessions)
+      .where(eq(workoutSessions.userId, userId))
+      .orderBy(desc(workoutSessions.date))
+      .limit(limit);
+    
+    return Promise.all(
+      sessions.map(async (session) => {
+        const [workout] = await db
+          .select()
+          .from(workouts)
+          .where(eq(workouts.id, session.workoutId));
+        
+        return {
+          ...session,
+          workout: workout!,
+        };
+      }),
+    );
+  }
+
+  async createWorkoutSession(insertSession: InsertWorkoutSession): Promise<WorkoutSession> {
+    // Ensure all required fields are present
+    const sessionToInsert = {
+      ...insertSession,
+      date: insertSession.date || new Date(),
+      duration: insertSession.duration || null,
+      notes: insertSession.notes || null,
+      completed: insertSession.completed || 0
+    };
+    
+    const [session] = await db
+      .insert(workoutSessions)
+      .values(sessionToInsert)
+      .returning();
+    
+    // Update the last completed date for the workout
+    if (session.completed) {
+      await this.updateWorkoutLastCompleted(session.workoutId, session.date);
+    }
+    
+    return session;
+  }
+
+  async updateWorkoutSession(id: number, session: Partial<InsertWorkoutSession>): Promise<WorkoutSession | undefined> {
+    const [updatedSession] = await db
+      .update(workoutSessions)
+      .set(session)
+      .where(eq(workoutSessions.id, id))
+      .returning();
+    return updatedSession || undefined;
+  }
+
+  async completeWorkoutSession(id: number): Promise<WorkoutSession | undefined> {
+    const [session] = await db
+      .update(workoutSessions)
+      .set({ completed: 1 })
+      .where(eq(workoutSessions.id, id))
+      .returning();
+    
+    if (!session) return undefined;
+    
+    // Update the last completed date for the workout
+    await this.updateWorkoutLastCompleted(session.workoutId, session.date);
+    
+    return session;
+  }
+
+  async deleteWorkoutSession(id: number): Promise<boolean> {
+    const result = await db
+      .delete(workoutSessions)
+      .where(eq(workoutSessions.id, id));
+    return !!result;
+  }
+
+  // Session Exercise methods
+  async getSessionExercises(sessionId: number): Promise<(SessionExercise & { exercise: Exercise })[]> {
+    const sessionExercisesData = await db
+      .select()
+      .from(sessionExercises)
+      .where(eq(sessionExercises.sessionId, sessionId));
+    
+    return Promise.all(
+      sessionExercisesData.map(async (se) => {
+        const exercise = await this.getExercise(se.exerciseId);
+        return {
+          ...se,
+          exercise: exercise!,
+        };
+      }),
+    );
+  }
+
+  async createSessionExercise(insertSessionExercise: InsertSessionExercise): Promise<SessionExercise> {
+    // Ensure required fields
+    const sessionExerciseToInsert = {
+      ...insertSessionExercise,
+      completed: insertSessionExercise.completed || 0
+    };
+    
+    const [sessionExercise] = await db
+      .insert(sessionExercises)
+      .values(sessionExerciseToInsert)
+      .returning();
+    return sessionExercise;
+  }
+
+  async completeSessionExercise(id: number): Promise<SessionExercise | undefined> {
+    const [sessionExercise] = await db
+      .update(sessionExercises)
+      .set({ completed: 1 })
+      .where(eq(sessionExercises.id, id))
+      .returning();
+    return sessionExercise || undefined;
+  }
+
+  async deleteSessionExercise(id: number): Promise<boolean> {
+    const result = await db
+      .delete(sessionExercises)
+      .where(eq(sessionExercises.id, id));
+    return !!result;
+  }
+
+  // Exercise Set methods
+  async getExerciseSets(sessionExerciseId: number): Promise<ExerciseSet[]> {
+    return await db
+      .select()
+      .from(exerciseSets)
+      .where(eq(exerciseSets.sessionExerciseId, sessionExerciseId))
+      .orderBy(exerciseSets.setNumber);
+  }
+
+  async createExerciseSet(insertSet: InsertExerciseSet): Promise<ExerciseSet> {
+    // Ensure required fields
+    const setToInsert = {
+      ...insertSet,
+      weight: insertSet.weight || null,
+      reps: insertSet.reps || null,
+      completed: insertSet.completed || 0
+    };
+    
+    const [set] = await db
+      .insert(exerciseSets)
+      .values(setToInsert)
+      .returning();
+    return set;
+  }
+
+  async updateExerciseSet(id: number, set: Partial<InsertExerciseSet>): Promise<ExerciseSet | undefined> {
+    const [updatedSet] = await db
+      .update(exerciseSets)
+      .set(set)
+      .where(eq(exerciseSets.id, id))
+      .returning();
+    return updatedSet || undefined;
+  }
+
+  async completeExerciseSet(id: number): Promise<ExerciseSet | undefined> {
+    const [set] = await db
+      .update(exerciseSets)
+      .set({ completed: 1 })
+      .where(eq(exerciseSets.id, id))
+      .returning();
+    
+    if (!set) return undefined;
+    
+    // Check if this set is a new personal record
+    if (set.weight && set.reps) {
+      const [sessionExercise] = await db
+        .select()
+        .from(sessionExercises)
+        .where(eq(sessionExercises.id, set.sessionExerciseId));
+      
+      if (sessionExercise) {
+        // Get the workout session to determine the user ID
+        const [session] = await db
+          .select()
+          .from(workoutSessions)
+          .where(eq(workoutSessions.id, sessionExercise.sessionId));
+        
+        if (session) {
+          // Check existing personal records for this user and exercise
+          const existingRecords = await db
+            .select()
+            .from(personalRecords)
+            .where(
+              and(
+                eq(personalRecords.userId, session.userId),
+                eq(personalRecords.exerciseId, sessionExercise.exerciseId)
+              )
+            );
+          
+          // Check if this is a new record (higher weight or same weight with more reps)
+          const isNewRecord = !existingRecords.some((record) => 
+            (record.weight > set.weight!) || 
+            (record.weight === set.weight! && record.reps >= set.reps!)
+          );
+          
+          if (isNewRecord) {
+            await this.createPersonalRecord({
+              userId: session.userId,
+              exerciseId: sessionExercise.exerciseId,
+              weight: set.weight,
+              reps: set.reps,
+              date: new Date(),
+            });
+          }
+        }
+      }
+    }
+    
+    return set;
+  }
+
+  async deleteExerciseSet(id: number): Promise<boolean> {
+    const result = await db
+      .delete(exerciseSets)
+      .where(eq(exerciseSets.id, id));
+    return !!result;
+  }
+
+  // Personal Record methods
+  async getPersonalRecords(userId: number): Promise<(PersonalRecord & { exercise: Exercise })[]> {
+    const records = await db
+      .select()
+      .from(personalRecords)
+      .where(eq(personalRecords.userId, userId))
+      .orderBy(desc(personalRecords.date));
+    
+    return Promise.all(
+      records.map(async (record) => {
+        const exercise = await this.getExercise(record.exerciseId);
+        return {
+          ...record,
+          exercise: exercise!,
+        };
+      }),
+    );
+  }
+
+  async getRecentPersonalRecords(userId: number, limit: number): Promise<(PersonalRecord & { exercise: Exercise })[]> {
+    const records = await db
+      .select()
+      .from(personalRecords)
+      .where(eq(personalRecords.userId, userId))
+      .orderBy(desc(personalRecords.date))
+      .limit(limit);
+    
+    return Promise.all(
+      records.map(async (record) => {
+        const exercise = await this.getExercise(record.exerciseId);
+        return {
+          ...record,
+          exercise: exercise!,
+        };
+      }),
+    );
+  }
+
+  async createPersonalRecord(insertRecord: InsertPersonalRecord): Promise<PersonalRecord> {
+    // Ensure date is present
+    const recordToInsert = {
+      ...insertRecord,
+      date: insertRecord.date || new Date()
+    };
+    
+    const [record] = await db
+      .insert(personalRecords)
+      .values(recordToInsert)
+      .returning();
+    return record;
+  }
+
+  async deletePersonalRecord(id: number): Promise<boolean> {
+    const result = await db
+      .delete(personalRecords)
+      .where(eq(personalRecords.id, id));
+    return !!result;
+  }
+
+  // Stats methods
+  async getWeeklyWorkouts(userId: number): Promise<{ count: number; goal: number; percentage: number }> {
+    const now = new Date();
+    const weekStart = new Date(now);
+    weekStart.setDate(now.getDate() - now.getDay()); // Start of the week (Sunday)
+    weekStart.setHours(0, 0, 0, 0);
+    
+    const completedWorkouts = await db
+      .select()
+      .from(workoutSessions)
+      .where(
+        and(
+          eq(workoutSessions.userId, userId),
+          eq(workoutSessions.completed, 1),
+          gte(workoutSessions.date, weekStart)
+        )
+      );
+    
+    const count = completedWorkouts.length;
+    const goal = 5; // Default goal is 5 workouts per week
+    const percentage = Math.min(Math.round((count / goal) * 100), 100);
+    
+    return { count, goal, percentage };
+  }
+
+  async getTotalWeightLifted(userId: number, periodDays: number): Promise<number> {
+    const now = new Date();
+    const periodStart = new Date(now);
+    periodStart.setDate(now.getDate() - periodDays);
+    
+    // Get all workout sessions for the user in the period
+    const sessions = await db
+      .select()
+      .from(workoutSessions)
+      .where(
+        and(
+          eq(workoutSessions.userId, userId),
+          gte(workoutSessions.date, periodStart)
+        )
+      );
+    
+    let totalWeight = 0;
+    
+    for (const session of sessions) {
+      // Get all session exercises
+      const sessionExercisesData = await db
+        .select()
+        .from(sessionExercises)
+        .where(eq(sessionExercises.sessionId, session.id));
+      
+      for (const sessionExercise of sessionExercisesData) {
+        // Get all completed sets for this exercise
+        const sets = await db
+          .select()
+          .from(exerciseSets)
+          .where(
+            and(
+              eq(exerciseSets.sessionExerciseId, sessionExercise.id),
+              eq(exerciseSets.completed, 1)
+            )
+          );
+        
+        // Sum up weight × reps for each completed set
+        for (const set of sets) {
+          if (set.weight && set.reps) {
+            totalWeight += set.weight * set.reps;
+          }
+        }
+      }
+    }
+    
+    return totalWeight;
+  }
+
+  async getWeightLiftedByDay(userId: number, days: number): Promise<{ day: string; weight: number }[]> {
+    const now = new Date();
+    const result: { day: string; weight: number }[] = [];
+    
+    // Initialize the results array with zero weights for each day
+    for (let i = days - 1; i >= 0; i--) {
+      const date = new Date(now);
+      date.setDate(now.getDate() - i);
+      const day = date.toLocaleDateString('en-US', { weekday: 'short' }).charAt(0);
+      
+      result.push({
+        day,
+        weight: 0,
+      });
+    }
+    
+    // Get all workout sessions for the user in the period
+    const periodStart = new Date(now);
+    periodStart.setDate(now.getDate() - (days - 1));
+    periodStart.setHours(0, 0, 0, 0);
+    
+    const sessions = await db
+      .select()
+      .from(workoutSessions)
+      .where(
+        and(
+          eq(workoutSessions.userId, userId),
+          gte(workoutSessions.date, periodStart)
+        )
+      );
+    
+    for (const session of sessions) {
+      const sessionDate = new Date(session.date);
+      const dayDiff = Math.floor((now.getTime() - sessionDate.getTime()) / (1000 * 60 * 60 * 24));
+      
+      if (dayDiff < days) {
+        // Get all session exercises
+        const sessionExercisesData = await db
+          .select()
+          .from(sessionExercises)
+          .where(eq(sessionExercises.sessionId, session.id));
+        
+        let dailyWeight = 0;
+        
+        for (const sessionExercise of sessionExercisesData) {
+          // Get all completed sets for this exercise
+          const sets = await db
+            .select()
+            .from(exerciseSets)
+            .where(
+              and(
+                eq(exerciseSets.sessionExerciseId, sessionExercise.id),
+                eq(exerciseSets.completed, 1)
+              )
+            );
+          
+          // Sum up weight × reps for each completed set
+          for (const set of sets) {
+            if (set.weight && set.reps) {
+              dailyWeight += set.weight * set.reps;
+            }
+          }
+        }
+        
+        // Add this weight to the appropriate day
+        result[days - 1 - dayDiff].weight += dailyWeight;
+      }
+    }
+    
+    return result;
+  }
+}
+
+// Initialize with default exercises if needed
+async function initializeDefaultExercises() {
+  const existingExercises = await db.select().from(exercises);
+  
+  if (existingExercises.length === 0) {
+    const defaultExercises: InsertExercise[] = [
+      {
+        name: "Bench Press",
+        description: "A compound exercise that targets the chest, shoulders, and triceps",
+        category: "Chest",
+        targetMuscles: "Chest, Triceps, Shoulders",
+        equipmentType: "Barbell",
+        exerciseType: "Strength",
+      },
+      {
+        name: "Squat",
+        description: "A compound lower body exercise that targets the quadriceps, hamstrings, and glutes",
+        category: "Legs",
+        targetMuscles: "Quadriceps, Hamstrings, Glutes",
+        equipmentType: "Barbell",
+        exerciseType: "Strength",
+      },
+      {
+        name: "Deadlift",
+        description: "A compound exercise that targets the lower back, glutes, and hamstrings",
+        category: "Back",
+        targetMuscles: "Lower Back, Glutes, Hamstrings",
+        equipmentType: "Barbell",
+        exerciseType: "Strength",
+      },
+      {
+        name: "Pull-up",
+        description: "A compound upper body exercise that targets the back and biceps",
+        category: "Back",
+        targetMuscles: "Lats, Biceps, Upper Back",
+        equipmentType: "Bodyweight",
+        exerciseType: "Strength",
+      },
+      {
+        name: "Shoulder Press",
+        description: "A compound upper body exercise that targets the shoulders and triceps",
+        category: "Shoulders",
+        targetMuscles: "Deltoids, Triceps",
+        equipmentType: "Dumbbell",
+        exerciseType: "Strength",
+      },
+      {
+        name: "Leg Press",
+        description: "A machine-based lower body exercise that targets the quadriceps, hamstrings, and glutes",
+        category: "Legs",
+        targetMuscles: "Quadriceps, Hamstrings, Glutes",
+        equipmentType: "Machine",
+        exerciseType: "Strength",
+      },
+    ];
+
+    for (const exercise of defaultExercises) {
+      await db.insert(exercises).values(exercise);
+    }
+  }
+}
+
+// Create the database storage instance
+export const storage = new DatabaseStorage();
+
+// Initialize default exercises
+initializeDefaultExercises().catch(console.error);

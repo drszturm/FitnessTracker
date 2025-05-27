@@ -2,16 +2,21 @@ import { pgTable, text, serial, integer, timestamp, real, json } from "drizzle-o
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-// User schema (from existing schema)
+// User schema with OAuth support
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
-  password: text("password").notNull(),
+  password: text("password"),
+  email: text("email"),
+  provider: text("provider"), // 'local', 'facebook', 'google', 'instagram'
+  providerUserId: text("provider_user_id"), // ID from the OAuth provider
+  profilePhotoUrl: text("profile_photo_url"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-export const insertUserSchema = createInsertSchema(users).pick({
-  username: true,
-  password: true,
+export const insertUserSchema = createInsertSchema(users).omit({
+  id: true,
+  createdAt: true,
 });
 
 // Exercise data
