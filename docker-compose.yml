@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: fittrack-db
+    environment:
+      POSTGRES_USER: fittrack
+      POSTGRES_PASSWORD: fittrack123
+      POSTGRES_DB: fittrack
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fittrack -d fittrack"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # FitTrack Application
+  app:
+    build: .
+    container_name: fittrack-app
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://fittrack:fittrack123@postgres:5432/fittrack
+      PGHOST: postgres
+      PGPORT: 5432
+      PGUSER: fittrack
+      PGPASSWORD: fittrack123
+      PGDATABASE: fittrack
+      SESSION_SECRET: your-super-secret-session-key-change-in-production
+      # OAuth credentials (optional - add your own)
+      # FACEBOOK_APP_ID: your_facebook_app_id
+      # FACEBOOK_APP_SECRET: your_facebook_app_secret
+      # GOOGLE_CLIENT_ID: your_google_client_id
+      # GOOGLE_CLIENT_SECRET: your_google_client_secret
+      # INSTAGRAM_CLIENT_ID: your_instagram_client_id
+      # INSTAGRAM_CLIENT_SECRET: your_instagram_client_secret
+    ports:
+      - "5000:5000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - .:/app
+      - /app/node_modules
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
